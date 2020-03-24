@@ -13,7 +13,11 @@ inference magic. It works with both [Express] and [Koa].
 - [The Problem](#the-problem)
 - [Tutorial](#tutorial)
 - [API Reference](#api-reference)
+  - [Imports](#imports)
   - [Responses](#responses)
+  - [Redirects](#redirects)
+    - [`Response.Redirect<Status extends 301 | 302>`](#responseredirectstatus-extends-301--302)
+    - [`Response.redirect<Status extends 301 | 302>(status: Status, location: string): Response.Redirect<Status>`](#responseredirectstatus-extends-301--302status-status-location-string-responseredirectstatus)
   - [Middleware](#middleware)
     - [`Middleware.next([value[, finalizer]])`](#middlewarenextvalue-finalizer)
     - [`Middleware.stop(response)`](#middlewarestopresponse)
@@ -404,6 +408,29 @@ Here's a list of most common responses:
 
 For the full list of supported responses, see
 [response.ts](packages/typera-common/src/response.ts).
+
+### Redirects
+
+Redirecting requires setting a header, and is such a common thing to do,
+that a few helpers are provided.
+
+#### `Response.Redirect<Status extends 301 | 302>`
+
+This type alias equals to `Response.Response<Status, string,
+{ Location: string }>`
+
+#### `Response.redirect<Status extends 301 | 302>(status: Status, location: string): Response.Redirect<Status>`
+
+Create a response that redirects to the given location.
+
+Example:
+
+```typescript
+const myHandler: Route<Response.Redirect<301>> =
+  route.get('/foo')()(async req => {
+    return Response.redirect(301, '/bar')
+  })
+```
 
 ### Middleware
 

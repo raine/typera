@@ -847,3 +847,23 @@ export function hTTPVersionNotSupported(): HTTPVersionNotSupported
 export function hTTPVersionNotSupported(body = undefined, headers = undefined) {
   return { status: 505, body, headers }
 }
+
+export type Redirect<Status extends 301 | 302> = Response<
+  Status,
+  string,
+  { Location: string }
+>
+
+export function redirect<Status extends 301 | 302>(
+  status: Status,
+  location: string
+): Redirect<Status> {
+  return {
+    status,
+    body:
+      status === 301
+        ? `Moved permanently. Redirecting to ${location}`
+        : `Found. Redirecting to ${location}`,
+    headers: { Location: location },
+  }
+}

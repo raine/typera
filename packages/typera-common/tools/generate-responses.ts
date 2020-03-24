@@ -32,6 +32,29 @@ export function ${fnName}(body = undefined, headers = undefined) {
 
 `
 
+const footer = `\
+
+export type Redirect<Status extends 301 | 302> = Response<
+  Status,
+  string,
+  { Location: string }
+>
+
+export function redirect<Status extends 301 | 302>(
+  status: Status,
+  location: string
+): Redirect<Status> {
+  return {
+    status,
+    body:
+      status === 301
+        ? \`Moved permanently. Redirecting to \${location}\`
+        : \`Found. Redirecting to \${location}\`,
+    headers: { Location: location },
+  }
+}
+`
+
 const r = (status: number, name: string, fnName?: string): ResponseDef => ({
   status,
   name,
@@ -107,3 +130,4 @@ process.stdout.write(header)
 responses.forEach(r => {
   process.stdout.write(generateCode(r))
 })
+process.stdout.write(footer)
